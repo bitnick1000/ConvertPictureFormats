@@ -25,6 +25,7 @@ namespace ConvertPictureFormats
         public MainWindow()
         {
             InitializeComponent();
+            return;
             var folderBrowser = new CommonOpenFileDialog();
             folderBrowser.IsFolderPicker = true;
             folderBrowser.Title = "Select folder";
@@ -72,6 +73,30 @@ namespace ConvertPictureFormats
                 files.AddRange(GetFiles(d.FullName, extension));
             }
             return files;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var folderBrowser = new CommonOpenFileDialog();
+            folderBrowser.IsFolderPicker = false;
+            folderBrowser.Multiselect = true;
+            folderBrowser.Title = "Select files";
+            folderBrowser.InitialDirectory = System.Environment.CurrentDirectory;
+            var result = folderBrowser.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+            {
+                MergePng merge = new MergePng();
+                foreach (string filename in folderBrowser.FileNames)
+                {
+                    merge.AddFileName(filename);
+                }
+                merge.Merge();
+                string savePath = merge.filenames[0] + ".png";
+                merge.Save(savePath);
+                MessageBox.Show("Saved to " + savePath);
+            }
+            folderBrowser.Dispose();
+            //MessageBox.Show("Done!");
         }
     }
 }
